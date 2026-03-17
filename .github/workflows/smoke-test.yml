@@ -1,15 +1,19 @@
 name: Java Smoke Test
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-  build:
-    # Use the standard runner (Unlimited free minutes for public repos)
+  smoke-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 5 
+    timeout-minutes: 5
 
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up JDK 21
@@ -18,7 +22,10 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Compile Java Files
+      - name: Compile Java files
         run: |
           mkdir -p bin
           javac -d bin src/*.java
+
+      - name: Run the program (smoke test)
+        run: java -cp bin Main
